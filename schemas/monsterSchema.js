@@ -1,4 +1,5 @@
 import { createSchema } from "graphql-yoga";
+import { Monster } from "../db/db.js";
 
 export const schema = createSchema({
     typeDefs: `
@@ -81,72 +82,112 @@ export const schema = createSchema({
     }
 
     type Query {
-        monsters: String
+        monsters: [Monster]
         savingThrow: SavingThrow
         skill: Skill
         ability: Ability
         action: Action
         simpleAction: SimpleAction
-        monster: Monster
+        monster(id_name: String): Monster
     }`,
     resolvers: {
         Query: {
-            monsters: () => 'this is where the monsters will come from',
+            monsters: async () => {
+                console.log(Monster)
+                const monsters = await Monster.find({})
+                if(monsters.length === 0){
+                    return []
+                }
+
+                return monsters.map(monster => {
+                    return {
+                        id: monster._id.toString(),
+                        id_name: monster.id_name,
+                        name: monster.name,
+                        size: monster.size,
+                        race: monster.race,
+                        alignment: monster.alignment,
+                        armorClass: monster.armorClass,
+                        armorType: monster.armorType,
+                        hitPoints: monster.hitPoints,
+                        hitDie: monster.hitDie,
+                        movementSpeed: monster.movementSpeed,
+                        str: monster.str,
+                        dex: monster.dex,
+                        con: monster.con,
+                        int: monster.int,
+                        wis: monster.wis,
+                        cha: monster.cha,
+                        savingThrows: monster.savingThrows,
+                        skills: monster.skills,
+                        damageResistances: monster.damageResistances,
+                        legendaryResistances: monster.legendaryResistances,
+                        damageImmunities: monster.damageImmunites,
+                        conditionImmunities: monster.conditionImmunities,
+                        damageVulnerabilities: monster.damageVulnerabilities,
+                        senses: monster.senses,
+                        languages: monster.languages,
+                        challenge: monster.challenge,
+                        experience: monster.experience,
+                        abilities: monster.abilities,
+                        actions: monster.actions,
+                        legendaryDescription: monster.legendaryDescription,
+                        legendaryActions: monster.legendaryActions,
+                        lairDescription: monster.lairDescription,
+                        lairActions: monster.lairActions,
+                        regionalDescription: monster.regionalDescription,
+                        regionalEffects: monster.regionalEffects,
+                        mythicDescription: monster.mythicDescription,
+                        mythicActions: monster.mythicActions
+                    }
+                })
+            },
             savingThrow: () => { return {savingThrowType: 'Dex', modifier: 8}},
             skill: () => {return {skillType: 'Perception', modifier: 3}},
             ability: () => {return {name: 'Multiattack', description: '3 attacks', isAction: true}},
             action: () => {return {name: 'Shortsword', attackType: 'Melee Weapon Attack', modifier: 9, reach: '5 ft.', targets: 1, hits: [{dieType: '1d6+6', damageType: 'piercing'}], description: ''}},
             simpleAction: () => {return {name: 'Action', description: 'Some action'}},
-            monster: () => {
+            monster: async (_, {id_name}) => {
+                const monster = await Monster.findOne({id_name: id_name})
                 return {
-                    id: 'id',
-                    id_name: 'id_name',
-                    name: 'name',
-                    size: 'size',
-                    race: 'race',
-                    alignment: 'alignment',
-                    armorClass: 16,
-                    armorType: 'natural armor',
-                    hitPoints: 12,
-                    hitDie: '2d6',
-                    movementSpeed: ['30 ft.'],
-                    str: 10,
-                    dex: 10,
-                    con: 10,
-                    int: 10,
-                    wis: 10,
-                    cha: 10,
-                    savingThrows: [
-                        {
-                            savingThrowType: 'Dex',
-                            modifier: 2
-                        }
-                    ],
-                    skills: [
-                        {
-                            skillType: 'Stealth',
-                            modifier: 2
-                        }
-                    ],
-                    damageResistances: ['Poison'],
-                    legendaryResistances: [],
-                    damageImmunities: ['Fire'],
-                    conditionImmunities: ['Poisoned'],
-                    damageVulnerabilities: ['Slashing'],
-                    senses: ['blindsight 30 ft.'],
-                    languages: ['common'],
-                    challenge: '1/2',
-                    experience: 100,
-                    abilities: [],
-                    actions: [],
-                    legendaryDescription: '',
-                    legendaryActions: [],
-                    lairDescription: '',
-                    lairActions: [],
-                    regionalDescription: '',
-                    regionalEffects: [],
-                    mythicDescription: '',
-                    mythicActions: []
+                    id: monster._id.toString(),
+                    id_name: monster.id_name,
+                    name: monster.name,
+                    size: monster.size,
+                    race: monster.race,
+                    alignment: monster.alignment,
+                    armorClass: monster.armorClass,
+                    armorType: monster.armorType,
+                    hitPoints: monster.hitPoints,
+                    hitDie: monster.hitDie,
+                    movementSpeed: monster.movementSpeed,
+                    str: monster.str,
+                    dex: monster.dex,
+                    con: monster.con,
+                    int: monster.int,
+                    wis: monster.wis,
+                    cha: monster.cha,
+                    savingThrows: monster.savingThrows,
+                    skills: monster.skills,
+                    damageResistances: monster.damageResistances,
+                    legendaryResistances: monster.legendaryResistances,
+                    damageImmunities: monster.damageImmunities,
+                    conditionImmunities: monster.conditionImmunities,
+                    damageVulnerabilities: monster.damageVulnerabilites,
+                    senses: monster.senses,
+                    languages: monster.languages,
+                    challenge: monster.challenge,
+                    experience: monster.experience,
+                    abilities: monster.abilities,
+                    actions: monster.actions,
+                    legendaryDescription: monster.legendaryDescription,
+                    legendaryActions: monster.legendaryActions,
+                    lairDescription: monster.lairDescription,
+                    lairActions: monster.lairActions,
+                    regionalDescription: monster.regionalDescription,
+                    regionalEffects: monster.regionalEffects,
+                    mythicDescription: monster.mythicDesription,
+                    mythicActions: monster.mythicActions
                 }
             }
         }
