@@ -2,8 +2,11 @@ import { Schema } from "mongoose";
 
 export const MonsterSchema = new Schema({
     id_name: {
-        index: true,
-        type: String
+        index: {
+            unique: true
+        },
+        type: String,
+        lowercase: true
     },
     name: {type: String},
     size: {type: String},
