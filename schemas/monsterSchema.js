@@ -194,12 +194,22 @@ export const schema = createSchema({
         },
         Mutation : {
             addMonster: async (_, {monster}) => {
+                if(await Monster.findOne({id_name: monster.id_name})) {
+                    return {
+                        message: 'Monster with this name already exists',
+                        data: {}
+                    }
+                }
+
+                const result = await (new Monster(monster)).save()
+
                 
                 return {
                     message: 'Success',
-                    data: monster
+                    data: {...result.toJSON()}
                 }
             }
         }
     }
 })
+
